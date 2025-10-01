@@ -1,134 +1,166 @@
+/* ========================================
+   기본 설정
+======================================== */
+
 /* 기본 폰트 설정 */
 body {
     font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 모바일 컨테이너 스타일 */
-.mobile-container {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+/* ========================================
+   메인 레이아웃
+======================================== */
+
+/* 상단 배경 이미지 섹션 */
+.hero-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out;
 }
 
-/* 모바일에서 전체 화면 스타일 */
-@media (max-width: 767px) {
-    .mobile-container {
-        border-radius: 0;
-        box-shadow: none;
-        min-height: 100vh;
-        max-width: none;
-        width: 100vw;
-        margin: 0;
+.hero-image-light {
+    z-index: 1;
+}
+
+.hero-image-dark {
+    z-index: 0;
+    opacity: 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* background: rgba(0, 0, 0, 0.2); */
+}
+
+/* 테마 토글 버튼 */
+.theme-toggle-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* 사이트 로고 스타일 */
+.site-logo {
+    height: 2rem;
+    width: auto;
+    background: none;
+    border: none;
+    object-fit: contain;
+}
+
+.app-container {
+    position: relative;
+    width: 100%;
+}
+
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+}
+
+.main-card {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    transition: border-radius 0.3s ease, margin-top 0.3s ease;
+    overflow: hidden;
+    border-radius: 24px 24px 0 0;
+    margin-top: -16px;
+    background: white;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.main-card.sticky {
+    background: white;
+    backdrop-filter: none;
+    border-radius: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* 데스크톱 스타일 */
+@media (min-width: 426px) {
+    body {
+        overflow: auto !important;
+        background: #f7fafc;
     }
     
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .app-container {
+        max-width: 400px;
+        margin: 20px auto;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
     
     .hero-section {
-        border-radius: 0 !important;
-        height: 40vh !important;
-    }
-    
-    .main-card {
-        border-radius: 0 !important;
-        margin-top: 0 !important;
-    }
-}
-
-/* 메인 카드 스타일 */
-.main-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    position: sticky;
-    top: 0;
-    z-index: 20;
-}
-
-.main-card.expanded {
-    transform: translateY(-20px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-}
-
-/* 메인 카드가 상단에 고정될 때 배경을 가리는 효과 */
-.main-card.sticky {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* 모바일에서 메인 카드 스타일 */
-@media (max-width: 767px) {
-    body {
-        overflow: hidden !important;
-    }
-    
-    .main-card {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 30;
-        transition: border-radius 0.3s ease, margin-top 0.3s ease;
-        overflow: hidden;
         border-radius: 24px 24px 0 0;
-        margin-top: -16px;
+    }
+    
+    .main-card {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin-top: -20px;
+        max-height: none;
+        z-index: 10;
     }
     
     .main-card.sticky {
-        background: white;
-        backdrop-filter: none;
-        border-radius: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    /* 스크롤 가능한 콘텐츠 영역을 전체 화면으로 확장 */
-    .scrollable-content {
-        height: calc(100vh - 200px);
-        max-height: none;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 24px 24px;
+        margin-top: -20px;
     }
 }
 
-/* 스크롤 가능한 콘텐츠 영역 */
-.scrollable-content {
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e0 #f7fafc;
-}
+/* ========================================
+   회원 카드 스타일
+======================================== */
 
-.scrollable-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.scrollable-content::-webkit-scrollbar-track {
-    background: #f7fafc;
-    border-radius: 3px;
-}
-
-.scrollable-content::-webkit-scrollbar-thumb {
-    background: #cbd5e0;
-    border-radius: 3px;
-}
-
-.scrollable-content::-webkit-scrollbar-thumb:hover {
-    background: #a0aec0;
-}
-
-/* 회원 카드 스타일 */
 .member-card {
-    background: white;
-    border-radius: 12px;
+    background: #f6f8fb; /* bg-gray-50 */
+    color: #374151; /* text-gray-700 */
+    border-radius: 12px; /* rounded-xl */
     padding: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 500; /* font-medium */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
 }
 
 .member-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #f3f4f6; /* 더 진한 회색 배경 */
 }
 
 .member-photo {
@@ -136,7 +168,7 @@ body {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #e2e8f0;
+    /* border: 2px solid #e2e8f0; */
 }
 
 .member-name {
@@ -150,7 +182,10 @@ body {
     color: #718096;
 }
 
-/* 연도별 토글 스타일 */
+/* ========================================
+   연도별 토글 스타일
+======================================== */
+
 .year-toggle {
     background: white;
     border-radius: 12px;
@@ -239,15 +274,18 @@ body {
     color: #718096;
 }
 
-/* 회비 현황 테이블 스타일 */
-.dues-table {
+/* ========================================
+   회비 현황 테이블 스타일
+======================================== */
+
+#dues-table {
     background: white;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.dues-table th {
+#dues-table th {
     background: #f7fafc;
     font-weight: 600;
     color: #4a5568;
@@ -257,33 +295,37 @@ body {
     border-right: 1px solid #e2e8f0;
 }
 
-.dues-table th:first-child {
+#dues-table th:first-child {
     text-align: left;
     padding-left: 12px;
 }
 
-.dues-table th:last-child {
+#dues-table th:last-child {
     border-right: none;
 }
 
-.dues-table td {
-    padding: 8px 4px;
+#dues-table tr {
+    margin: 2px 0;
+}
+
+#dues-table td {
+    padding: 4px 2px;
     text-align: center;
     border-right: 1px solid #f1f5f9;
     border-bottom: 1px solid #f1f5f9;
 }
 
-.dues-table td:first-child {
+#dues-table td:first-child {
     text-align: left;
     padding-left: 12px;
     border-right: 1px solid #e2e8f0;
 }
 
-.dues-table td:last-child {
+#dues-table td:last-child {
     border-right: none;
 }
 
-.dues-table tr:last-child td {
+#dues-table tr:last-child td {
     border-bottom: none;
 }
 
@@ -303,6 +345,7 @@ body {
 }
 
 .member-info-name {
+    width: 50px;
     font-weight: 500;
     color: #2d3748;
     font-size: 13px;
@@ -310,8 +353,8 @@ body {
 
 /* 회비 상태 표시 */
 .dues-status {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -331,7 +374,19 @@ body {
     color: #718096;
 }
 
-/* 계좌번호 복사 버튼 */
+/* ========================================
+   계좌번호 복사 버튼
+======================================== */
+
+.account-info span {
+    color: #969696;
+    font-weight: bold;
+}
+
+.account-info #account-bank {
+    margin-left: 10px;
+}
+
 #account-copy-btn {
     position: relative;
     overflow: hidden;
@@ -355,20 +410,72 @@ body {
     height: 200px;
 }
 
-/* 반응형 디자인 */
-@media (min-width: 768px) {
-    .mobile-container {
-        max-width: 400px;
+/* ========================================
+   모달 스타일
+======================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 400px;
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    overflow: hidden;
+}
+
+.modal-overlay.show .modal-content {
+    left: 0;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f7fafc;
+}
+
+.modal-body {
+    padding: 20px;
+    height: calc(100% - 80px);
+    overflow-y: auto;
+}
+
+/* 모바일에서 모달 크기 조정 */
+@media (max-width: 425px) {
+    .modal-content {
+        width: 90%;
     }
 }
 
-@media (min-width: 1024px) {
-    .mobile-container {
-        max-width: 420px;
-    }
-}
+/* ========================================
+   애니메이션
+======================================== */
 
-/* 애니메이션 */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -429,6 +536,10 @@ body {
     opacity: 1;
 }
 
+/* ========================================
+   접근성 및 포커스 스타일
+======================================== */
+
 /* 접근성 개선 */
 @media (prefers-reduced-motion: reduce) {
     * {
@@ -446,29 +557,264 @@ button:focus,
     outline-offset: 2px;
 }
 
-/* 다크 모드 지원 */
+/* ========================================
+   다크 모드 지원
+======================================== */
+
+/* 다크 모드 CSS 변수 */
+.dark {
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
+    --bg-tertiary: #4a5568;
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --border-color: #4a5568;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+.light {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7fafc;
+    --bg-tertiary: #edf2f7;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --border-color: #e2e8f0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 다크모드 스타일 */
+.dark .app-container {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+.dark .main-card {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.dark .member-card {
+    background: rgba(99, 179, 237, 0.1);
+    color: #63b3ed;
+}
+
+.dark .member-card:hover {
+    background: rgba(99, 179, 237, 0.2);
+}
+
+.dark .year-toggle {
+    background: var(--bg-tertiary);
+}
+
+.dark .year-header {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+}
+
+.dark .year-title {
+    color: var(--text-primary);
+}
+
+.dark .year-count {
+    color: var(--text-secondary);
+}
+
+.dark .member-name,
+.dark .year-member-name {
+    color: var(--text-primary);
+}
+
+.dark .member-position,
+.dark .year-member-position {
+    color: var(--text-secondary);
+}
+
+.dark #dues-table {
+    background: var(--bg-tertiary);
+}
+
+.dark #dues-table th {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-right-color: var(--border-color);
+}
+
+.dark #dues-table td {
+    color: var(--text-primary);
+    border-right-color: var(--border-color);
+    border-bottom-color: var(--border-color);
+}
+
+.dark #dues-table td:first-child {
+    border-right-color: var(--border-color);
+}
+
+.dark .member-info-name {
+    color: var(--text-primary);
+}
+
+.dark .dues-status.paid {
+    background: #4299e1;
+    color: white;
+}
+
+.dark .dues-status.unpaid {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.dark .year-member-item {
+    border-bottom-color: var(--border-color);
+}
+
+/* 다크모드 스크롤바 스타일 (제거됨) */
+
+/* 다크모드 버튼 스타일 */
+.dark a[href*="example.com"] {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+.dark a[href*="example.com"]:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.dark #account-copy-btn {
+    background-color: #3b82f6 !important;
+    color: white !important;
+}
+
+.dark #account-copy-btn:hover {
+    background-color: #2563eb !important;
+}
+
+/* 다크모드 텍스트 색상 */
+.dark h1,
+.dark h2,
+.dark h3 {
+    color: var(--text-primary) !important;
+}
+
+.dark .text-gray-800 {
+    color: var(--text-primary) !important;
+}
+
+.dark .text-gray-700 {
+    color: var(--text-primary) !important;
+}
+
+.dark .text-gray-600 {
+    color: var(--text-secondary) !important;
+}
+
+.dark .text-gray-500 {
+    color: var(--text-secondary) !important;
+}
+
+.dark .text-gray-400 {
+    color: var(--text-secondary) !important;
+}
+
+.dark .text-blue-600 {
+    color: #63b3ed !important;
+}
+
+.dark .text-white {
+    color: var(--text-primary) !important;
+}
+
+/* 다크모드 버튼 및 배경 */
+.dark button {
+    color: var(--text-primary);
+}
+
+.dark .bg-gray-100 {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.dark .bg-gray-50 {
+    background-color: var(--bg-primary) !important;
+}
+
+.dark .bg-blue-50 {
+    background-color: rgba(99, 179, 237, 0.1) !important;
+}
+
+.dark .bg-blue-500 {
+    background-color: #4299e1 !important;
+}
+
+.dark .hover\:bg-gray-200:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+.dark .border-b {
+    border-bottom-color: var(--border-color) !important;
+}
+
+/* 다크모드 SVG 아이콘 */
+.dark svg {
+    color: var(--text-secondary);
+}
+
+.dark .text-gray-500 svg {
+    color: var(--text-secondary);
+}
+
+.dark .text-gray-400 svg {
+    color: var(--text-secondary);
+}
+
+/* 다크모드 모달 */
+.dark .modal-content {
+    background: var(--bg-secondary);
+}
+
+.dark .modal-header {
+    background: var(--bg-tertiary);
+    border-bottom-color: var(--border-color);
+}
+
+.dark .modal-header h2 {
+    color: var(--text-primary);
+}
+
+.dark .modal-header button:hover {
+    background-color: var(--bg-secondary);
+}
+
+/* 시스템 다크모드 폴백 */
 @media (prefers-color-scheme: dark) {
-    .mobile-container {
+    :root:not(.light) {
+        --bg-primary: #1a202c;
+        --bg-secondary: #2d3748;
+        --bg-tertiary: #4a5568;
+        --bg-quaternary: #595c5f;
+        --text-primary: #e2e8f0;
+        --text-secondary: #a0aec0;
+        --border-color: #4a5568;
+        --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    :root:not(.light) .app-container {
         background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
     }
     
-    .main-card {
-        background: #2d3748;
-        color: #e2e8f0;
+    :root:not(.light) .main-card {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
     }
     
-    .member-card {
-        background: #4a5568;
-        color: #e2e8f0;
+    :root:not(.light) .member-card {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
     }
     
-    .year-toggle {
-        background: #4a5568;
+    :root:not(.light) .year-toggle {
+        background: var(--bg-tertiary);
     }
     
-    .year-header {
-        background: #2d3748;
-        border-bottom-color: #4a5568;
+    :root:not(.light) .year-header {
+        background: var(--bg-secondary);
+        border-bottom-color: var(--border-color);
     }
 }
-

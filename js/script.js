@@ -10,10 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
 // 앱 초기화
 async function initializeApp() {
     try {
+        initializeTheme();
         await loadData();
         renderCurrentMembers();
         renderYearlyMembers();
         renderDuesTable();
+        renderAccountInfo();
+        initializeBackgroundImage();
         setupEventListeners();
         setupMobileScrollBehavior();
     } catch (error) {
@@ -25,11 +28,12 @@ async function initializeApp() {
 // 데이터 로드
 async function loadData() {
     try {
-        const response = await fetch("data.json");
+        const response = await fetch("data.yml");
         if (!response.ok) {
             throw new Error("데이터를 불러올 수 없습니다.");
         }
-        groupData = await response.json();
+        const yamlText = await response.text();
+        groupData = jsyaml.load(yamlText);
     } catch (error) {
         console.error("데이터 로드 오류:", error);
         throw error;
@@ -89,7 +93,7 @@ function renderYearlyMembers() {
 // 연도별 토글 생성
 function createYearToggle(yearData) {
     const toggle = document.createElement("div");
-    toggle.className = "year-toggle fade-in-up";
+    toggle.className = "year-toggle";
     toggle.innerHTML = `
         <div class="year-header" onclick="toggleYear(${yearData.year})">
             <div class="flex items-center justify-between">
@@ -175,10 +179,7 @@ function createDuesRow(member) {
     row.innerHTML = `
         <td>
             <div class="member-info">
-                <img src="${member.photo}" alt="${
-        member.name
-    }" class="member-info-photo"
-                     onerror="this.src='images/default-avatar.svg'">
+                
                 <span class="member-info-name">${member.name}</span>
             </div>
         </td>
@@ -188,7 +189,7 @@ function createDuesRow(member) {
             return `
                 <td>
                     <div class="dues-status ${isPaid ? "paid" : "unpaid"}">
-                        ${isPaid ? "✓" : "✗"}
+                        ${isPaid ? "✓" : "X"}
                     </div>
                 </td>
             `;
@@ -197,38 +198,31 @@ function createDuesRow(member) {
     return row;
 }
 
-// 모바일 스크롤 동작 설정
-function setupMobileScrollBehavior() {
-    const isMobile = window.innerWidth <= 767;
-
-    if (isMobile) {
-        // 모바일에서 전체 화면 스크롤 비활성화
-        document.body.style.overflow = "hidden";
-
-        // 메인 카드의 스크롤 가능한 영역을 전체 화면으로 확장
-        const scrollableContent = document.querySelector(".scrollable-content");
-        if (scrollableContent) {
-            scrollableContent.style.height = "calc(100vh - 200px)";
-            scrollableContent.style.maxHeight = "none";
-        }
+// 계좌 정보 렌더링
+function renderAccountInfo() {
+    if (!groupData || !groupData.groupInfo || !groupData.groupInfo.accountInfo) return;
+    
+    const accountBank = document.getElementById("account-bank");
+    const accountNumber = document.getElementById("account-number");
+    
+    if (accountBank) {
+        accountBank.textContent = groupData.groupInfo.accountInfo.bank;
     }
+    
+    if (accountNumber) {
+        accountNumber.textContent = groupData.groupInfo.accountInfo.accountNumber;
+    }
+}
+
+// 모바일 스크롤 동작 설정 (제거됨 - 더 이상 필요 없음)
+function setupMobileScrollBehavior() {
+    // 스크롤 가능한 콘텐츠 영역이 제거되어 더 이상 필요 없음
+    // 빈 함수로 유지하여 호출 오류 방지
 }
 
 // 이벤트 리스너 설정
 function setupEventListeners() {
-    // 메인 카드 클릭 이벤트 (스크롤 확장)
-    const mainCard = document.querySelector(".main-card");
-    if (mainCard) {
-        mainCard.addEventListener("click", function () {
-            toggleMainCardExpansion();
-        });
-    }
-
-    // 스크롤 이벤트 리스너 추가
-    const scrollableContent = document.querySelector(".scrollable-content");
-    if (scrollableContent) {
-        scrollableContent.addEventListener("scroll", optimizedScrollHandler);
-    }
+    // 참여하기 버튼은 HTML에서 직접 링크로 처리됨
 
     // 계좌번호 복사 버튼
     const accountCopyBtn = document.getElementById("account-copy-btn");
@@ -246,34 +240,46 @@ function setupEventListeners() {
         });
     }
 
-    // 게시판 버튼
-    const boardBtn = document.querySelector('button:contains("게시판")');
-    if (boardBtn) {
-        boardBtn.addEventListener("click", function () {
-            showToast("게시판 기능은 준비 중입니다.", "info");
-        });
-    }
-
-    // 관리 버튼
-    const manageBtn = document.querySelector('button:contains("관리")');
+    // 관리 버튼 (헤더 섹션에 있는 버튼)
+    const manageBtn = document.querySelector('.header-section button');
     if (manageBtn) {
         manageBtn.addEventListener("click", function () {
             window.location.href = "admin.php";
         });
     }
-}
 
-// 메인 카드 확장/축소 토글
-function toggleMainCardExpansion() {
-    const mainCard = document.querySelector(".main-card");
-    const scrollableContent = document.querySelector(".scrollable-content");
+    // 테마 토글 버튼
+    const themeToggle = document.getElementById("theme-toggle");
+    if (themeToggle) {
+        themeToggle.addEventListener("click", function () {
+            toggleTheme();
+        });
+    }
 
-    if (mainCard.classList.contains("expanded")) {
-        mainCard.classList.remove("expanded");
-        scrollableContent.style.maxHeight = "24rem"; // 96 (384px)
-    } else {
-        mainCard.classList.add("expanded");
-        scrollableContent.style.maxHeight = "calc(100vh - 200px)";
+    // 연도별 회원 명단 모달 버튼
+    const yearlyMembersBtn = document.getElementById("yearly-members-btn");
+    if (yearlyMembersBtn) {
+        yearlyMembersBtn.addEventListener("click", function () {
+            openYearlyMembersModal();
+        });
+    }
+
+    // 모달 닫기 버튼
+    const closeModalBtn = document.getElementById("close-modal");
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener("click", function () {
+            closeYearlyMembersModal();
+        });
+    }
+
+    // 모달 배경 클릭 시 닫기
+    const modalOverlay = document.getElementById("yearly-members-modal");
+    if (modalOverlay) {
+        modalOverlay.addEventListener("click", function (e) {
+            if (e.target === modalOverlay) {
+                closeYearlyMembersModal();
+            }
+        });
     }
 }
 
@@ -337,10 +343,10 @@ function showCopySuccess() {
 
     setTimeout(() => {
         btn.classList.remove("copied");
-        btn.textContent = "토스뱅크 111-11-1111";
+        btn.textContent = "계좌 복사하기";
     }, 2000);
 
-    showToast("계좌번호가 복사되었습니다!", "success");
+    showToast("모임통장 계좌번호가 복사되었습니다!", "success");
 }
 
 // 토스트 메시지 표시
@@ -414,87 +420,117 @@ function throttle(func, limit) {
     };
 }
 
-// 스크롤 이벤트 최적화
-const optimizedScrollHandler = throttle(function () {
-    const mainCard = document.querySelector(".main-card");
-    const scrollableContent = document.querySelector(".scrollable-content");
-    const isMobile = window.innerWidth <= 767;
-
-    if (isMobile) {
-        // 모바일에서 스크롤 위치에 따른 스타일 변경
-        const scrollTop = scrollableContent.scrollTop;
-        const threshold = 50; // 스크롤 임계값
-
-        if (scrollTop > threshold) {
-            mainCard.classList.add("sticky");
-        } else {
-            mainCard.classList.remove("sticky");
-        }
-    } else {
-        // 데스크탑/태블릿에서 기존 로직 유지
-        if (scrollableContent.scrollTop > 0) {
-            mainCard.classList.add("sticky");
-        } else {
-            mainCard.classList.remove("sticky");
-        }
-
-        if (
-            scrollableContent.scrollTop > 50 &&
-            !mainCard.classList.contains("expanded")
-        ) {
-            mainCard.classList.add("expanded");
-        } else if (
-            scrollableContent.scrollTop <= 50 &&
-            mainCard.classList.contains("expanded")
-        ) {
-            mainCard.classList.remove("expanded");
-        }
-    }
-}, 100);
-
-// 터치 이벤트 지원 (모바일)
-let touchStartY = 0;
-let touchEndY = 0;
-
-document.addEventListener("touchstart", function (e) {
-    touchStartY = e.changedTouches[0].screenY;
-});
-
-document.addEventListener("touchend", function (e) {
-    touchEndY = e.changedTouches[0].screenY;
-    handleSwipe();
-});
-
-function handleSwipe() {
-    const swipeThreshold = 50;
-    const diff = touchStartY - touchEndY;
-
-    if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-            // 위로 스와이프 - 카드 확장
-            const mainCard = document.querySelector(".main-card");
-            if (!mainCard.classList.contains("expanded")) {
-                toggleMainCardExpansion();
-            }
-        } else {
-            // 아래로 스와이프 - 카드 축소
-            const mainCard = document.querySelector(".main-card");
-            if (mainCard.classList.contains("expanded")) {
-                toggleMainCardExpansion();
-            }
-        }
-    }
-}
-
 // 키보드 접근성 지원
 document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
-        const mainCard = document.querySelector(".main-card");
-        if (mainCard.classList.contains("expanded")) {
-            toggleMainCardExpansion();
+        // 모달이 열려있으면 모달 닫기
+        const modal = document.getElementById("yearly-members-modal");
+        if (modal && modal.classList.contains("show")) {
+            closeYearlyMembersModal();
         }
     }
 });
+
+// 테마 초기화
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme) {
+        document.documentElement.className = savedTheme;
+    } else if (prefersDark) {
+        document.documentElement.className = 'dark';
+    } else {
+        document.documentElement.className = 'light';
+    }
+    
+    updateThemeIcon();
+    updateBackgroundImage(document.documentElement.className);
+}
+
+// 테마 토글
+function toggleTheme() {
+    const currentTheme = document.documentElement.className;
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.className = newTheme;
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon();
+    updateBackgroundImage(newTheme);
+    
+    // showToast(`${newTheme === 'dark' ? '다크' : '라이트'} 모드로 변경되었습니다.`, 'info');
+}
+
+// 배경 이미지 업데이트
+function updateBackgroundImage(theme) {
+    const heroLight = document.getElementById('hero-light');
+    const heroDark = document.getElementById('hero-dark');
+    
+    if (!heroLight || !heroDark) return;
+    
+    if (theme === 'dark') {
+        // 다크 모드: 다크 이미지를 보이게 함
+        heroLight.style.opacity = '0';
+        heroDark.style.opacity = '1';
+        heroLight.style.zIndex = '0';
+        heroDark.style.zIndex = '1';
+    } else {
+        // 라이트 모드: 라이트 이미지를 보이게 함
+        heroLight.style.opacity = '1';
+        heroDark.style.opacity = '0';
+        heroLight.style.zIndex = '1';
+        heroDark.style.zIndex = '0';
+    }
+}
+
+// 초기 배경 이미지 설정
+function initializeBackgroundImage() {
+    const heroLight = document.getElementById('hero-light');
+    const heroDark = document.getElementById('hero-dark');
+    
+    if (!heroLight || !heroDark) return;
+    
+    // 초기 상태: 라이트 이미지가 보이도록 설정
+    heroLight.style.opacity = '1';
+    heroDark.style.opacity = '0';
+    heroLight.style.zIndex = '1';
+    heroDark.style.zIndex = '0';
+}
+
+// 테마 아이콘 업데이트
+function updateThemeIcon() {
+    const themeToggle = document.getElementById("theme-toggle");
+    if (!themeToggle) return;
+    
+    const isDark = document.documentElement.className === 'dark';
+    const icon = themeToggle.querySelector('svg path');
+    
+    if (isDark) {
+        // 해 아이콘 (다크모드일 때)
+        icon.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
+    } else {
+        // 달 아이콘 (라이트모드일 때)
+        icon.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
+    }
+}
+
+// 연도별 회원 명단 모달 열기
+function openYearlyMembersModal() {
+    const modal = document.getElementById("yearly-members-modal");
+    if (modal) {
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden"; // 배경 스크롤 방지
+    }
+}
+
+// 연도별 회원 명단 모달 닫기
+function closeYearlyMembersModal() {
+    const modal = document.getElementById("yearly-members-modal");
+    if (modal) {
+        modal.classList.remove("show");
+        document.body.style.overflow = ""; // 스크롤 복원
+    }
+}
 
 // 페이지 가시성 변경 시 데이터 새로고침
 document.addEventListener("visibilitychange", function () {
@@ -511,3 +547,4 @@ document.addEventListener("visibilitychange", function () {
             });
     }
 });
+
