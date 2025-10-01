@@ -1,0 +1,474 @@
+/* 기본 폰트 설정 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 모바일 컨테이너 스타일 */
+.mobile-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* 모바일에서 전체 화면 스타일 */
+@media (max-width: 767px) {
+    .mobile-container {
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 100vh;
+        max-width: none;
+        width: 100vw;
+        margin: 0;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .hero-section {
+        border-radius: 0 !important;
+        height: 40vh !important;
+    }
+    
+    .main-card {
+        border-radius: 0 !important;
+        margin-top: 0 !important;
+    }
+}
+
+/* 메인 카드 스타일 */
+.main-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.main-card.expanded {
+    transform: translateY(-20px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* 메인 카드가 상단에 고정될 때 배경을 가리는 효과 */
+.main-card.sticky {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* 모바일에서 메인 카드 스타일 */
+@media (max-width: 767px) {
+    body {
+        overflow: hidden !important;
+    }
+    
+    .main-card {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 30;
+        transition: border-radius 0.3s ease, margin-top 0.3s ease;
+        overflow: hidden;
+        border-radius: 24px 24px 0 0;
+        margin-top: -16px;
+    }
+    
+    .main-card.sticky {
+        background: white;
+        backdrop-filter: none;
+        border-radius: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    /* 스크롤 가능한 콘텐츠 영역을 전체 화면으로 확장 */
+    .scrollable-content {
+        height: calc(100vh - 200px);
+        max-height: none;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* 스크롤 가능한 콘텐츠 영역 */
+.scrollable-content {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.scrollable-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+    background: #f7fafc;
+    border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* 회원 카드 스타일 */
+.member-card {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.member-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e2e8f0;
+}
+
+.member-name {
+    font-weight: 500;
+    color: #2d3748;
+    font-size: 14px;
+}
+
+.member-position {
+    font-size: 12px;
+    color: #718096;
+}
+
+/* 연도별 토글 스타일 */
+.year-toggle {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.year-header {
+    padding: 12px 16px;
+    background: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.year-header:hover {
+    background: #edf2f7;
+}
+
+.year-title {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 16px;
+}
+
+.year-count {
+    font-size: 14px;
+    color: #718096;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.toggle-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.year-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.year-content.expanded {
+    max-height: 500px;
+}
+
+.year-members {
+    padding: 16px;
+}
+
+.year-member-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.year-member-item:last-child {
+    border-bottom: none;
+}
+
+.year-member-photo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.year-member-info {
+    flex: 1;
+}
+
+.year-member-name {
+    font-weight: 500;
+    color: #2d3748;
+    font-size: 14px;
+}
+
+.year-member-position {
+    font-size: 12px;
+    color: #718096;
+}
+
+/* 회비 현황 테이블 스타일 */
+.dues-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dues-table th {
+    background: #f7fafc;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    border-right: 1px solid #e2e8f0;
+}
+
+.dues-table th:first-child {
+    text-align: left;
+    padding-left: 12px;
+}
+
+.dues-table th:last-child {
+    border-right: none;
+}
+
+.dues-table td {
+    padding: 8px 4px;
+    text-align: center;
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dues-table td:first-child {
+    text-align: left;
+    padding-left: 12px;
+    border-right: 1px solid #e2e8f0;
+}
+
+.dues-table td:last-child {
+    border-right: none;
+}
+
+.dues-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* 회원 정보 셀 */
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.member-info-photo {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+}
+
+.member-info-name {
+    font-weight: 500;
+    color: #2d3748;
+    font-size: 13px;
+}
+
+/* 회비 상태 표시 */
+.dues-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.dues-status.paid {
+    background: #4299e1;
+    color: white;
+}
+
+.dues-status.unpaid {
+    background: #e2e8f0;
+    color: #718096;
+}
+
+/* 계좌번호 복사 버튼 */
+#account-copy-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+#account-copy-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(66, 153, 225, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+#account-copy-btn.copied::after {
+    width: 200px;
+    height: 200px;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 768px) {
+    .mobile-container {
+        max-width: 400px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .mobile-container {
+        max-width: 420px;
+    }
+}
+
+/* 애니메이션 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* 로딩 상태 */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #4299e1;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 토스트 메시지 */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4299e1;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 포커스 스타일 */
+button:focus,
+.member-card:focus,
+.year-header:focus {
+    outline: 2px solid #4299e1;
+    outline-offset: 2px;
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .mobile-container {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    }
+    
+    .main-card {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .member-card {
+        background: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .year-toggle {
+        background: #4a5568;
+    }
+    
+    .year-header {
+        background: #2d3748;
+        border-bottom-color: #4a5568;
+    }
+}
+

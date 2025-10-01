@@ -1,0 +1,161 @@
+{
+    "groupInfo": {
+        "name": "광주새백성교회 청장년회",
+        "accountInfo": {
+            "bank": "토스뱅크",
+            "accountNumber": "1001-7545-1977"
+        }
+    },
+    "years": [
+        {
+            "year": 2025,
+            "members": [
+                {
+                    "id": 1,
+                    "name": "장누가",
+                    "position": "회장",
+                    "photo": "images/default-avatar.svg",
+                    "dues": {
+                        "1": true,
+                        "2": true,
+                        "3": true,
+                        "4": true,
+                        "5": true,
+                        "6": true,
+                        "7": true,
+                        "8": true,
+                        "9": true,
+                        "10": true,
+                        "11": false,
+                        "12": false
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "장태민",
+                    "position": "부회장",
+                    "photo": "images/default-avatar.svg",
+                    "dues": {
+                        "1": true,
+                        "2": true,
+                        "3": true,
+                        "4": false,
+                        "5": false,
+                        "6": false,
+                        "7": false,
+                        "8": false,
+                        "9": false,
+                        "10": false,
+                        "11": false,
+                        "12": false
+                    }
+                },
+                {
+                    "id": 3,
+                    "name": "유수진",
+                    "position": "부회장",
+                    "photo": "images/default-avatar.svg",
+                    "dues": {
+                        "1": true,
+                        "2": true,
+                        "3": true,
+                        "4": false,
+                        "5": false,
+                        "6": false,
+                        "7": false,
+                        "8": false,
+                        "9": false,
+                        "10": false,
+                        "11": false,
+                        "12": false
+                    }
+                },
+                {
+                    "id": 4,
+                    "name": "정수진",
+                    "position": "회계",
+                    "photo": "images/default-avatar.svg",
+                    "dues": {
+                        "1": true,
+                        "2": true,
+                        "3": true,
+                        "4": true,
+                        "5": true,
+                        "6": true,
+                        "7": true,
+                        "8": true,
+                        "9": true,
+                        "10": true,
+                        "11": true,
+                        "12": true
+                    }
+                },
+                {
+                    "id": 5,
+                    "name": "최동현",
+                    "position": "회원",
+                    "photo": "images/default-avatar.svg",
+                    "dues": {
+                        "1": true,
+                        "2": true,
+                        "3": true,
+                        "4": true,
+                        "5": true,
+                        "6": true,
+                        "7": true,
+                        "8": true,
+                        "9": true,
+                        "10": true,
+                        "11": false,
+                        "12": false
+                    }
+                }
+            ]
+        },
+        {
+            "year": 2023,
+            "members": [
+                {
+                    "id": 6,
+                    "name": "강지훈",
+                    "position": "회장",
+                    "photo": "images/default-avatar.svg",
+                    "dues": {
+                        "1": true,
+                        "2": true,
+                        "3": true,
+                        "4": true,
+                        "5": true,
+                        "6": true,
+                        "7": true,
+                        "8": true,
+                        "9": true,
+                        "10": true,
+                        "11": true,
+                        "12": true
+                    }
+                },
+                {
+                    "id": 7,
+                    "name": "윤서연",
+                    "position": "부회장",
+                    "photo": "images/default-avatar.svg",
+                    "dues": {
+                        "1": true,
+                        "2": true,
+                        "3": true,
+                        "4": true,
+                        "5": true,
+                        "6": true,
+                        "7": true,
+                        "8": true,
+                        "9": true,
+                        "10": true,
+                        "11": true,
+                        "12": true
+                    }
+                }
+            ]
+        }
+    ]
+}
