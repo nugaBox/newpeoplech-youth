@@ -46,6 +46,15 @@ function handleGet($db, $path) {
         case 'group-info':
             echo json_encode($db->getGroupInfo());
             break;
+        case 'event':
+            echo json_encode($db->getEventInfo());
+            break;
+        case 'slogan':
+            echo json_encode($db->getSloganInfo());
+            break;
+        case 'account-info':
+            echo json_encode($db->getAccountInfo());
+            break;
         case 'years':
             echo json_encode($db->getAllYears());
             break;
@@ -116,6 +125,31 @@ function handlePost($db, $path) {
                 $input['position'],
                 $input['photo'],
                 $input['dues']
+            );
+            echo json_encode(['success' => $result]);
+            break;
+        case 'event':
+            $result = $db->saveEventInfo(
+                $input['title'],
+                $input['date']
+            );
+            echo json_encode(['success' => $result]);
+            break;
+        case 'group-info':
+            $result = $db->saveGroupInfo($input['name']);
+            echo json_encode(['success' => $result]);
+            break;
+        case 'slogan':
+            $result = $db->saveSlogan(
+                $input['text'],
+                $input['reference']
+            );
+            echo json_encode(['success' => $result]);
+            break;
+        case 'account-info':
+            $result = $db->saveAccountInfo(
+                $input['bank'],
+                $input['number']
             );
             echo json_encode(['success' => $result]);
             break;

@@ -78,6 +78,39 @@ class Database {
             )
         ');
 
+        // 이벤트 정보 테이블
+        $this->pdo->exec('
+            CREATE TABLE IF NOT EXISTS event_info (
+                id INTEGER PRIMARY KEY,
+                title TEXT NOT NULL,
+                date TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ');
+
+        // 성경 구절 테이블
+        $this->pdo->exec('
+            CREATE TABLE IF NOT EXISTS slogan_info (
+                id INTEGER PRIMARY KEY,
+                text TEXT NOT NULL,
+                reference TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ');
+
+        // 모임통장 정보 테이블
+        $this->pdo->exec('
+            CREATE TABLE IF NOT EXISTS account_info (
+                id INTEGER PRIMARY KEY,
+                bank TEXT NOT NULL,
+                number TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        ');
+
         // 인덱스 생성
         $this->pdo->exec('CREATE INDEX IF NOT EXISTS idx_members_year ON members(year)');
         $this->pdo->exec('CREATE INDEX IF NOT EXISTS idx_members_name ON members(name)');
@@ -97,7 +130,16 @@ class Database {
                 ]
             ];
         }
-        return null;
+        
+        // 기본값을 데이터베이스에 저장
+        $this->updateGroupInfo('광주새백성교회 청장년회', '토스뱅크', '1001-7545-1977');
+        return [
+            'name' => '광주새백성교회 청장년회',
+            'accountInfo' => [
+                'bank' => '토스뱅크',
+                'accountNumber' => '1001-7545-1977'
+            ]
+        ];
     }
 
     public function updateGroupInfo($name, $bank, $accountNumber) {
@@ -106,6 +148,14 @@ class Database {
             VALUES (1, ?, ?, ?, CURRENT_TIMESTAMP)
         ');
         return $stmt->execute([$name, $bank, $accountNumber]);
+    }
+
+    public function saveGroupInfo($name) {
+        $stmt = $this->pdo->prepare('
+            INSERT OR REPLACE INTO group_info (id, name, bank, account_number, updated_at)
+            VALUES (1, ?, "기본은행", "기본계좌번호", CURRENT_TIMESTAMP)
+        ');
+        return $stmt->execute([$name]);
     }
 
     // 회원 관련 메서드
@@ -169,6 +219,81 @@ class Database {
             return $this->updateMember($id, $member['name'], $member['position'], $member['photo'], $dues);
         }
         return false;
+    }
+
+    // 이벤트 정보 관련 메서드
+    public function getEventInfo() {
+        $stmt = $this->pdo->query('SELECT * FROM event_info ORDER BY id DESC LIMIT 1');
+        $result = $stmt->fetch();
+        
+        if ($result) {
+            return [
+                'title' => $result['title'],
+                'date' => $result['date']
+            ];
+        }
+        
+        // 기본값을 데이터베이스에 저장
+        $this->saveEventInfo('청장년회 월례회', '2025-10-12');
+        return ['title' => '청장년회 월례회', 'date' => '2025-10-12'];
+    }
+
+    public function saveEventInfo($title, $date) {
+        $stmt = $this->pdo->prepare('
+            INSERT OR REPLACE INTO event_info (id, title, date, updated_at)
+            VALUES (1, ?, ?, CURRENT_TIMESTAMP)
+        ');
+        return $stmt->execute([$title, $date]);
+    }
+
+    // 성경 구절 관련 메서드
+    public function getSloganInfo() {
+        $stmt = $this->pdo->query('SELECT * FROM slogan_info ORDER BY id DESC LIMIT 1');
+        $result = $stmt->fetch();
+        
+        if ($result) {
+            return [
+                'text' => $result['text'],
+                'reference' => $result['reference']
+            ];
+        }
+        
+        // 기본값을 데이터베이스에 저장
+        $this->saveSlogan('새벽 이슬 같은 주의 청년들', '시 110:3');
+        return ['text' => '새벽 이슬 같은 주의 청년들', 'reference' => '시 110:3'];
+    }
+
+    public function saveSlogan($text, $reference) {
+        $stmt = $this->pdo->prepare('
+            INSERT OR REPLACE INTO slogan_info (id, text, reference, updated_at)
+            VALUES (1, ?, ?, CURRENT_TIMESTAMP)
+        ');
+        return $stmt->execute([$text, $reference]);
+    }
+
+    // 모임통장 정보 관련 메서드
+    public function getAccountInfo() {
+        $stmt = $this->pdo->query('SELECT * FROM account_info ORDER BY id DESC LIMIT 1');
+        $result = $stmt->fetch();
+        
+        if ($result) {
+            return [
+                'bank' => $result['bank'],
+                'number' => $result['number']
+            ];
+        }
+        
+        // 기본값을 데이터베이스에 저장
+        $this->saveAccountInfo('토스뱅크', '1001-7545-1977');
+        return ['bank' => '토스뱅크', 'number' => '1001-7545-1977'];
+    }
+
+    public function saveAccountInfo($bank, $number) {
+        $stmt = $this->pdo->prepare('
+            INSERT OR REPLACE INTO account_info (id, bank, number, updated_at)
+            VALUES (1, ?, ?, CURRENT_TIMESTAMP)
+        ');
+        return $stmt->execute([$bank, $number]);
     }
 
     // 데이터베이스 경로 반환
