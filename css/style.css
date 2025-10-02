@@ -1,8 +1,15 @@
-/* ========================================
-   기본 설정
-======================================== */
+@charset "utf-8";
 
-/* 기본 폰트 설정 */
+/* ========================================
+   공통 설정
+======================================== */
+@font-face {
+    font-family: 'NohHaeChan';
+    src: url('../fonts/ROEHOE-CHAN.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
 body {
     font-family: 'Pretendard Variable';
     overflow: hidden;
@@ -56,6 +63,7 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     z-index: 999;
+    width: 50px;
 }
 
 .theme-toggle-btn:hover {
@@ -211,6 +219,15 @@ body {
         padding-left: 24px;
         padding-right: 24px;
     }
+}
+
+/* ========================================
+   표어 스타일
+======================================== */
+#slogan-title p {font-family: 'NohHaeChan'; font-size: 1.3em;}
+#slogan-title p small {font-family: 'Pretendard Variable'; margin-left: 10px; font-size: 0.6em;}
+@media (min-width: 376px) {
+    #slogan-title p {font-size: 1.4em;}
 }
 
 /* ========================================
@@ -476,6 +493,8 @@ body {
     width: 200px;
     height: 200px;
 }
+
+#copyright p {font-size: 12px;}
 
 /* ========================================
    모달 스타일

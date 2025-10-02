@@ -4,33 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>광주새백성교회 청장년회</title>
+    <?php // 메타 정보 ?>
+    <meta name="description" content="새벽 이슬 같은 주의 청년들">
+    <meta name="keywords" content="광주새백성교회, 청장년회, 교회, 청년, 월례회">
+    <meta name="author" content="광주새백성교회">
+    <?php // Open Graph 메타 태그 ?>
+    <meta property="og:title" content="광주새백성교회 청장년회">
+    <meta property="og:description" content="새벽 이슬 같은 주의 청년들">
+    <meta property="og:image" content="/images/meta_image.jpg">
+    <meta property="og:url" content="https://youth.newpeoplech.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="광주새백성교회 청장년회">
+    <?php // Favicon ?>
     <link rel="icon" type="image/png" href="/images/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon.svg" />
     <link rel="shortcut icon" href="/images/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="/images/favicon/site.webmanifest" />
+    <?php // CSS ?>
     <link rel="stylesheet" href="css/tailwind.css">
     <link rel="stylesheet" href="css/pretendardvariable.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-gray-50">
-    <!-- 메인 컨테이너 -->
+    <?php // 메인 컨테이너 ?>
     <div class="app-container">
-        <!-- 상단 배경 이미지 -->
+        <?php // 상단 배경 이미지 ?>
         <div class="hero-section">
             <img src="images/youth_light.jpg" class="hero-image hero-image-light" id="hero-light">
             <img src="images/youth_dark.jpg" class="hero-image hero-image-dark" id="hero-dark">
             <div class="hero-overlay"></div>
-            <!-- 테마 토글 버튼 -->
+            <?php // 교회 홈페이지 버튼 ?>
+            <a href="https://www.newpeoplech.com" target="_blank" class="theme-toggle-btn" style="left: 20px;">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+            </a>
+            
+            <?php // 테마 토글 버튼 ?>
             <button id="theme-toggle" class="theme-toggle-btn">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                 </svg>
             </button>
+            
+            <?php // 다음 이벤트 카드 (hero-section 오버레이) ?>
+            <div class="absolute bottom-6 left-6 right-6 p-4 bg-white rounded-xl shadow-lg flex items-center gap-4 z-10">
+                <div class="flex-shrink-0">
+                    <img src="images/calendar-icon.png" alt="달력 아이콘" class="w-12 h-12 rounded-lg">
+                </div>
+                <div class="flex-1">
+                    <p class="text-gray-600 text-sm">다음 이벤트</p>
+                    <p class="text-gray-800 font-semibold text-base" id="next-event-title">청장년회 월례회</p>
+                </div>
+                <div class="flex-shrink-0">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
-        <!-- 메인 콘텐츠 카드 -->
+        <?php // 메인 콘텐츠 카드 ?>
         <div class="main-card">
-                <!-- 모임 정보 헤더 -->
+                <?php // 모임 정보 헤더 ?>
                 <div class="card-title p-6 pb-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-1">
@@ -48,7 +84,12 @@
                     </div>
                 </div>
                 <div class="p-6 pt-0 pb-4">
-                    <!-- 연도별 회원 명단 버튼 -->
+                    <?php // 성경 구절 섹션 ?>
+                    <div class="p-4 border border-gray-200 rounded-xl text-center" id="slogan-title">
+                        <p class="text-gray-800 font-semibold text-lg">새벽 이슬 같은 주의 청년들<small class="text-gray-500 text-xs">시 110:3</small></p>
+                    </div>
+                    
+                    <?php // 연도별 회원 명단 버튼 ?>
                     <button id="yearly-members-btn" class="w-full mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between hover:bg-gray-100 transition-colors">
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,15 +102,15 @@
                         </svg>
                     </button>
                 </div>
-                <!-- 회원 현황 섹션 -->
+                <?php // 회원 현황 섹션 ?>
                 <div class="px-6 pb-6">
                     <h2 id="current-year" class="text-lg font-semibold text-gray-800 mb-4"></h2>
                     <div id="current-members" class="grid grid-cols-2 gap-3">
-                        <!-- 회원 카드들이 여기에 동적으로 생성됩니다 -->
+                        <?php // 회원 카드들이 여기에 동적으로 생성됩니다 ?>
                     </div>
                 </div>
 
-                <!-- 회비 현황 섹션 -->
+                <?php // 회비 현황 섹션 ?>
                 <div class="px-6 pb-6 mt-4 mb-4">
                     <h2 class="text-lg font-semibold text-gray-800 mb-2">회비 현황</h2>
                     <div class="overflow-x-auto">
@@ -92,14 +133,13 @@
                                 </tr>
                             </thead>
                             <tbody id="dues-table">
-                                <!-- 회비 현황이 여기에 동적으로 생성됩니다 -->
+                                <?php // 회비 현황이 여기에 동적으로 생성됩니다 ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-                <!-- 모임통장 정보 섹션 -->
-                <div class="px-6 pb-20">
+                <?php // 모임통장 정보 섹션 ?>
+                <div class="px-6 pb-6">
                     <h3 class="text-md font-medium text-gray-700 mb-3 account-info">모임통장 <span id="account-bank">로딩중...</span> <span id="account-number">로딩중...</span></h3>
                     <div class="flex gap-3">
                         <a href="https://docs.google.com/spreadsheets/d/1SVkDdbGm4EHqbzSRjQ-xTb5IVDAY4fSZ/edit?usp=share_link&ouid=100222666619716175380&rtpof=true&sd=true" target="_blank" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-colors text-center block">
@@ -110,10 +150,15 @@
                         </button>
                     </div>
                 </div>
+                <?php // 카피라이트 ?>
+                <div class="px-6 mt-4 pb-20" id="copyright">
+                    <p class="text-center text-gray-400">
+                        © <script>document.write(new Date().getFullYear());</script> New People Church. All rights reserved.
+                    </p>
+                </div>
         </div>
     </div>
-
-    <!-- 연도별 회원 명단 모달 -->
+    <?php // 연도별 회원 명단 모달 ?>
     <div id="yearly-members-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -126,12 +171,12 @@
             </div>
             <div class="modal-body">
                 <div id="yearly-members">
-                    <!-- 연도별 토글이 여기에 동적으로 생성됩니다 -->
+                    <?php // 연도별 토글이 여기에 동적으로 생성됩니다 ?>
                 </div>
             </div>
         </div>
     </div>
-    <!-- JavaScript -->
+    <?php // JavaScript ?>
     <script src="js/script.js"></script>
 </body>
 </html>
