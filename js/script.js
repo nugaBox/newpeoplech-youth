@@ -10,17 +10,24 @@ document.addEventListener("DOMContentLoaded", function () {
 // 앱 초기화
 async function initializeApp() {
     try {
+        // 테마 초기화 (아이콘 설정 포함)
         initializeTheme();
+
+        // Feather 아이콘 초기화
+        initializeFeatherIcons();
+
         await loadData();
+        loadEventData();
+        loadGroupInfoData();
+        loadSloganData();
+        loadAccountInfoData();
         renderCurrentMembers();
         renderYearlyMembers();
         renderDuesTable();
-        renderAccountInfo();
         initializeBackgroundImage();
         setupEventListeners();
         setupMobileScrollBehavior();
     } catch (error) {
-        console.error("앱 초기화 중 오류 발생:", error);
         showToast("데이터를 불러오는 중 오류가 발생했습니다.", "error");
     }
 }
@@ -34,7 +41,6 @@ async function loadData() {
         }
         groupData = await response.json();
     } catch (error) {
-        console.error("데이터 로드 오류:", error);
         throw error;
     }
 }
@@ -116,20 +122,24 @@ function createYearToggle(yearData) {
         </div>
         <div class="year-content" id="year-${yearData.year}">
             <div class="year-members">
-                ${yearData.members
-                    .map(
-                        (member) => `
-                    <div class="year-member-item">
-                        <img src="${member.photo}" alt="${member.name}" class="year-member-photo"
-                             onerror="this.src='images/default-avatar.svg'">
-                        <div class="year-member-info">
-                            <div class="year-member-name">${member.name}</div>
-                            <div class="year-member-position">${member.position}</div>
+                <div class="grid grid-cols-2 gap-3">
+                    ${yearData.members
+                        .map(
+                            (member) => `
+                        <div class="member-card fade-in-up">
+                            <div class="flex items-center gap-3">
+                                <img src="${member.photo}" alt="${member.name}" class="member-photo" 
+                                     onerror="this.src='images/default-avatar.svg'">
+                                <div>
+                                    <div class="member-name">${member.name}</div>
+                                    <div class="member-position">${member.position}</div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                `
-                    )
-                    .join("")}
+                    `
+                        )
+                        .join("")}
+                </div>
             </div>
         </div>
     `;
@@ -159,24 +169,44 @@ function toggleYear(year) {
 }
 
 // 회비 현황 테이블 렌더링
-function renderDuesTable() {
+function renderDuesTable(selectedYear = null) {
     const tbody = document.getElementById("dues-table");
+    const yearSelect = document.getElementById("dues-year-select");
+
     if (!tbody || !groupData) return;
 
-    const currentYearData = groupData.years.find(
-        (year) => year.year === currentYear
-    );
-    if (!currentYearData) {
+    // 연도 선택 옵션 생성
+    if (yearSelect && !yearSelect.hasAttribute("data-populated")) {
+        yearSelect.innerHTML = '<option value="">연도 선택</option>';
+        groupData.years.forEach((yearData) => {
+            const option = document.createElement("option");
+            option.value = yearData.year;
+            option.textContent = `${yearData.year}년`;
+            yearSelect.appendChild(option);
+        });
+        yearSelect.setAttribute("data-populated", "true");
+
+        // 기본값을 현재 연도로 설정
+        yearSelect.value = currentYear;
+    }
+
+    const targetYear = selectedYear || currentYear;
+    const yearData = groupData.years.find((year) => year.year === targetYear);
+
+    if (!yearData) {
         tbody.innerHTML =
-            '<tr><td colspan="13" class="text-center text-gray-500 py-4">현재 연도 데이터가 없습니다.</td></tr>';
+            '<tr><td colspan="13" class="text-center text-gray-500 py-4">해당 연도 데이터가 없습니다.</td></tr>';
         return;
     }
 
     tbody.innerHTML = "";
-    currentYearData.members.forEach((member) => {
+    yearData.members.forEach((member) => {
         const row = createDuesRow(member);
         tbody.appendChild(row);
     });
+
+    // Feather 아이콘 다시 렌더링
+    feather.replace();
 }
 
 // 회비 현황 행 생성
@@ -195,7 +225,11 @@ function createDuesRow(member) {
             return `
                 <td>
                     <div class="dues-status ${isPaid ? "paid" : "unpaid"}">
-                        ${isPaid ? "✓" : "X"}
+                        ${
+                            isPaid
+                                ? '<i data-feather="check" class="w-4 h-4"></i>'
+                                : '<i data-feather="x" class="w-4 h-4"></i>'
+                        }
                     </div>
                 </td>
             `;
@@ -204,21 +238,117 @@ function createDuesRow(member) {
     return row;
 }
 
-// 계좌 정보 렌더링
-function renderAccountInfo() {
-    if (!groupData || !groupData.groupInfo || !groupData.groupInfo.accountInfo)
-        return;
+// 이벤트 데이터 로드
+async function loadEventData() {
+    try {
+        const response = await fetch("include/api.php?path=event");
+        if (response.ok) {
+            const eventData = await response.json();
+            renderEventInfo(eventData);
+        }
+    } catch (error) {
+        // 이벤트 데이터 로드 실패 시 무시
+    }
+}
 
+// 이벤트 정보 렌더링
+function renderEventInfo(eventData) {
+    const titleElement = document.getElementById("next-event-title");
+    const dateElement = document.getElementById("next-event-date");
+
+    if (titleElement && eventData && eventData.title) {
+        titleElement.textContent = eventData.title;
+    }
+
+    if (dateElement && eventData && eventData.date) {
+        const formattedDate = formatEventDate(eventData.date);
+        dateElement.textContent = `예정된 행사 · ${formattedDate}`;
+    }
+}
+
+// 날짜 포맷팅 (YYYY-MM-DD → YYYY년 M월 D일)
+function formatEventDate(dateString) {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    return `${year}년 ${month}월 ${day}일`;
+}
+
+// 모임 정보 데이터 로드
+async function loadGroupInfoData() {
+    try {
+        const response = await fetch("include/api.php?path=group-info");
+        if (response.ok) {
+            const groupInfoData = await response.json();
+            renderGroupInfo(groupInfoData);
+        }
+    } catch (error) {
+        // 모임 정보 데이터 로드 실패 시 무시
+    }
+}
+
+// 모임 정보 렌더링
+function renderGroupInfo(groupInfoData) {
+    const titleElement = document.querySelector(".card-title h1");
+
+    if (titleElement && groupInfoData && groupInfoData.name) {
+        titleElement.textContent = groupInfoData.name;
+    }
+}
+
+// 성경 구절 데이터 로드
+async function loadSloganData() {
+    try {
+        const response = await fetch("include/api.php?path=slogan");
+        if (response.ok) {
+            const sloganData = await response.json();
+            renderSlogan(sloganData);
+        }
+    } catch (error) {
+        // 성경 구절 데이터 로드 실패 시 무시
+    }
+}
+
+// 성경 구절 렌더링
+function renderSlogan(sloganData) {
+    const sloganElement = document.getElementById("slogan-title");
+
+    if (sloganElement && sloganData && sloganData.text) {
+        const referenceText = sloganData.reference
+            ? `<small class="text-gray-500 text-xs">${sloganData.reference}</small>`
+            : "";
+        sloganElement.innerHTML = `<p class="text-gray-800 font-semibold text-lg">${sloganData.text}${referenceText}</p>`;
+    }
+}
+
+// 모임통장 정보 데이터 로드
+async function loadAccountInfoData() {
+    try {
+        const response = await fetch("include/api.php?path=account-info");
+        if (response.ok) {
+            const accountData = await response.json();
+            renderAccountInfo(accountData);
+        }
+    } catch (error) {
+        // 모임통장 정보 데이터 로드 실패 시 무시
+    }
+}
+
+// 계좌 정보 렌더링
+function renderAccountInfo(accountData) {
     const accountBank = document.getElementById("account-bank");
     const accountNumber = document.getElementById("account-number");
 
-    if (accountBank) {
-        accountBank.textContent = groupData.groupInfo.accountInfo.bank;
+    if (accountBank && accountData && accountData.bank) {
+        accountBank.textContent = accountData.bank;
     }
 
-    if (accountNumber) {
-        accountNumber.textContent =
-            groupData.groupInfo.accountInfo.accountNumber;
+    if (accountNumber && accountData && accountData.number) {
+        accountNumber.textContent = accountData.number;
     }
 }
 
@@ -252,12 +382,10 @@ function setupScrollBehavior() {
             if (scrollTop > heroSectionHeight - 20) {
                 if (!mainCard.classList.contains("sticky")) {
                     mainCard.classList.add("sticky");
-                    console.log("main-card sticky 추가됨");
                 }
             } else {
                 if (mainCard.classList.contains("sticky")) {
                     mainCard.classList.remove("sticky");
-                    console.log("main-card sticky 제거됨");
                 }
             }
 
@@ -269,12 +397,10 @@ function setupScrollBehavior() {
             if (cardTitleRect.top <= appContainerRect.top + 10) {
                 if (!cardTitleSticky) {
                     cardTitleSticky = true;
-                    console.log("card-title sticky 상태:", cardTitleSticky);
                 }
             } else {
                 if (cardTitleSticky) {
                     cardTitleSticky = false;
-                    console.log("card-title sticky 해제됨");
                 }
             }
         }, 16)
@@ -343,6 +469,17 @@ function setupEventListeners() {
             if (e.target === modalOverlay) {
                 closeYearlyMembersModal();
             }
+        });
+    }
+
+    // 회비 현황 연도 선택
+    const duesYearSelect = document.getElementById("dues-year-select");
+    if (duesYearSelect) {
+        duesYearSelect.addEventListener("change", function () {
+            const selectedYear = this.value
+                ? parseInt(this.value)
+                : currentYear;
+            renderDuesTable(selectedYear);
         });
     }
 }
@@ -502,16 +639,21 @@ function initializeTheme() {
         "(prefers-color-scheme: dark)"
     ).matches;
 
+    let currentTheme;
     if (savedTheme) {
+        currentTheme = savedTheme;
         document.documentElement.className = savedTheme;
     } else if (prefersDark) {
+        currentTheme = "dark";
         document.documentElement.className = "dark";
     } else {
+        currentTheme = "light";
         document.documentElement.className = "light";
     }
 
-    updateThemeIcon();
-    updateBackgroundImage(document.documentElement.className);
+    // 테마에 맞는 초기 아이콘 설정
+    setInitialThemeIcon(currentTheme);
+    updateBackgroundImage(currentTheme);
 }
 
 // 테마 토글
@@ -563,26 +705,71 @@ function initializeBackgroundImage() {
     heroDark.style.zIndex = "0";
 }
 
+// Feather 아이콘 초기화
+function initializeFeatherIcons() {
+    if (typeof feather !== "undefined") {
+        feather.replace();
+    }
+}
+
+// 초기 테마 아이콘 설정
+function setInitialThemeIcon(theme) {
+    const themeToggle = document.getElementById("theme-toggle");
+    if (!themeToggle) {
+        return;
+    }
+
+    const icon = themeToggle.querySelector("i[data-feather]");
+
+    if (icon) {
+        if (theme === "dark") {
+            // 다크모드일 때는 달 아이콘 (다크모드에서 라이트모드로 변경할 수 있도록)
+            icon.setAttribute("data-feather", "moon");
+        } else {
+            // 라이트모드일 때는 해 아이콘 (라이트모드에서 다크모드로 변경할 수 있도록)
+            icon.setAttribute("data-feather", "sun");
+        }
+
+        // Feather 아이콘 렌더링
+        if (typeof feather !== "undefined") {
+            feather.replace();
+        }
+    }
+}
+
 // 테마 아이콘 업데이트
 function updateThemeIcon() {
     const themeToggle = document.getElementById("theme-toggle");
-    if (!themeToggle) return;
+    if (!themeToggle) {
+        return;
+    }
 
     const isDark = document.documentElement.className === "dark";
-    const icon = themeToggle.querySelector("svg path");
+
+    // Feather 아이콘이 렌더링된 후에는 SVG가 되므로, i 태그를 다시 생성
+    const existingIcon = themeToggle.querySelector("svg");
+    if (existingIcon) {
+        existingIcon.remove();
+    }
+
+    // 새로운 i 태그 생성
+    const icon = document.createElement("i");
+    icon.className = "w-6 h-6";
 
     if (isDark) {
-        // 해 아이콘 (다크모드일 때)
-        icon.setAttribute(
-            "d",
-            "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-        );
+        // 달 아이콘 (다크모드일 때)
+        icon.setAttribute("data-feather", "moon");
     } else {
-        // 달 아이콘 (라이트모드일 때)
-        icon.setAttribute(
-            "d",
-            "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-        );
+        // 해 아이콘 (라이트모드일 때)
+        icon.setAttribute("data-feather", "sun");
+    }
+
+    // 버튼에 아이콘 추가
+    themeToggle.appendChild(icon);
+
+    // Feather 아이콘 다시 렌더링
+    if (typeof feather !== "undefined") {
+        feather.replace();
     }
 }
 
@@ -615,7 +802,7 @@ document.addEventListener("visibilitychange", function () {
                 renderDuesTable();
             })
             .catch((error) => {
-                console.error("데이터 새로고침 오류:", error);
+                // 데이터 새로고침 실패 시 무시
             });
     }
 });

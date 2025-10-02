@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="css/tailwind.css">
     <link rel="stylesheet" href="css/pretendardvariable.css">
     <link rel="stylesheet" href="css/style.css">
+    <?php // Feather Icons ?>
+    <script src="js/feather-icons-4.29.2.min.js"></script>
 </head>
 <body class="bg-gray-50">
     <?php // 메인 컨테이너 ?>
@@ -34,33 +36,29 @@
             <img src="images/youth_light.jpg" class="hero-image hero-image-light" id="hero-light">
             <img src="images/youth_dark.jpg" class="hero-image hero-image-dark" id="hero-dark">
             <div class="hero-overlay"></div>
-            <?php // 교회 홈페이지 버튼 ?>
+            <?php /* // 교회 홈페이지 버튼
             <a href="https://www.newpeoplech.com" target="_blank" class="theme-toggle-btn" style="left: 20px;">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
+                <i data-feather="home" class="w-5 h-5"></i>
             </a>
-            
+            */ ?>
+            <a href="/admin.php" class="theme-toggle-btn" style="left: 20px;">
+                <i data-feather="settings" class="w-5 h-5"></i>
+            </a>
             <?php // 테마 토글 버튼 ?>
             <button id="theme-toggle" class="theme-toggle-btn">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
+                <i data-feather="sun" class="w-5 h-5"></i>
             </button>
             
             <?php // 다음 이벤트 카드 (hero-section 오버레이) ?>
-            <div class="absolute bottom-6 left-6 right-6 p-4 bg-white rounded-xl shadow-lg flex items-center gap-4 z-10">
-                <div class="flex-shrink-0">
-                    <img src="images/calendar-icon.png" alt="달력 아이콘" class="w-12 h-12 rounded-lg">
-                </div>
-                <div class="flex-1">
-                    <p class="text-gray-600 text-sm">다음 이벤트</p>
-                    <p class="text-gray-800 font-semibold text-base" id="next-event-title">청장년회 월례회</p>
-                </div>
-                <div class="flex-shrink-0">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
+            <div class="event-card-glass next-event-card">
+                <div class="flex items-center gap-3">
+                    <div class="flex-shrink-0">
+                        <i data-feather="calendar" class="w-6 h-6 text-gray-700"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-gray-700 text-sm" id="next-event-date">예정된 행사</p>
+                        <p class="text-gray-700 font-semibold text-base" id="next-event-title">청장년회 월례회</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,14 +90,10 @@
                     <?php // 연도별 회원 명단 버튼 ?>
                     <button id="yearly-members-btn" class="w-full mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between hover:bg-gray-100 transition-colors">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
+                            <i data-feather="users" class="w-5 h-5 text-gray-500"></i>
                             <span class="text-sm text-gray-600">연도별 회원 명단</span>
                         </div>
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+                        <i data-feather="chevron-right" class="w-5 h-5 text-gray-400"></i>
                     </button>
                 </div>
                 <?php // 회원 현황 섹션 ?>
@@ -110,9 +104,14 @@
                     </div>
                 </div>
 
-                <?php // 회비 현황 섹션 ?>
+                <?php // 회비 납부 현황 섹션 ?>
                 <div class="px-6 pb-6 mt-4 mb-4">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-2">회비 현황</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800">회비 납부 현황</h2>
+                        <select id="dues-year-select" class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm border-0 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <option value="">연도 선택</option>
+                        </select>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
@@ -140,7 +139,7 @@
                 </div>
                 <?php // 모임통장 정보 섹션 ?>
                 <div class="px-6 pb-6">
-                    <h3 class="text-md font-medium text-gray-700 mb-3 account-info">모임통장 <span id="account-bank">로딩중...</span> <span id="account-number">로딩중...</span></h3>
+                    <h3 class="text-md font-medium text-gray-700 mb-3 account-info">모임통장 정보 <img src="images/toss.png"><span id="account-bank"></span> <span id="account-number"></span></h3>
                     <div class="flex gap-3">
                         <a href="https://docs.google.com/spreadsheets/d/1SVkDdbGm4EHqbzSRjQ-xTb5IVDAY4fSZ/edit?usp=share_link&ouid=100222666619716175380&rtpof=true&sd=true" target="_blank" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-colors text-center block">
                             회계보고
@@ -155,7 +154,6 @@
                     <p class="text-center text-gray-400">
                         © <script>document.write(new Date().getFullYear());</script> New People Church. All rights reserved.
                     </p>
-                </div>
         </div>
     </div>
     <?php // 연도별 회원 명단 모달 ?>
@@ -164,9 +162,7 @@
             <div class="modal-header">
                 <h2 class="text-xl font-bold text-gray-800">연도별 회원 명단</h2>
                 <button id="close-modal" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                    <i data-feather="x" class="w-6 h-6 text-gray-500"></i>
                 </button>
             </div>
             <div class="modal-body">
