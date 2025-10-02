@@ -21,10 +21,10 @@ async function initializeAdminApp() {
     }
 }
 
-// 데이터 로드
+// 데이터 로드 (SQLite API 사용)
 async function loadData() {
     try {
-        const response = await fetch("data.json");
+        const response = await fetch("include/api.php?path=all-data");
         if (!response.ok) {
             throw new Error("데이터를 불러올 수 없습니다.");
         }
@@ -480,12 +480,29 @@ function setupEventListeners() {
     }
 }
 
-// 데이터 저장
+// 데이터 저장 (SQLite API 사용)
 async function saveData() {
     try {
-        // 실제로는 서버에 POST 요청을 보내야 하지만,
-        // 여기서는 로컬 스토리지에 저장하는 것으로 대체
-        localStorage.setItem("groupData", JSON.stringify(groupData));
+        // 그룹 정보 업데이트
+        if (groupData && groupData.groupInfo) {
+            const response = await fetch("include/api.php?path=group-info", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: groupData.groupInfo.name,
+                    bank: groupData.groupInfo.accountInfo.bank,
+                    accountNumber:
+                        groupData.groupInfo.accountInfo.accountNumber,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("그룹 정보 저장 실패");
+            }
+        }
+
         showToast("데이터가 저장되었습니다.", "success");
     } catch (error) {
         console.error("데이터 저장 오류:", error);

@@ -25,15 +25,14 @@ async function initializeApp() {
     }
 }
 
-// 데이터 로드
+// 데이터 로드 (SQLite API 사용)
 async function loadData() {
     try {
-        const response = await fetch("data.yml");
+        const response = await fetch("include/api.php?path=all-data");
         if (!response.ok) {
             throw new Error("데이터를 불러올 수 없습니다.");
         }
-        const yamlText = await response.text();
-        groupData = jsyaml.load(yamlText);
+        groupData = await response.json();
     } catch (error) {
         console.error("데이터 로드 오류:", error);
         throw error;
@@ -43,7 +42,14 @@ async function loadData() {
 // 현재 연도 회원 현황 렌더링
 function renderCurrentMembers() {
     const container = document.getElementById("current-members");
+    const yearElement = document.getElementById("current-year");
+
     if (!container || !groupData) return;
+
+    // 연도 표시
+    if (yearElement) {
+        yearElement.textContent = `${currentYear}년 회원`;
+    }
 
     const currentYearData = groupData.years.find(
         (year) => year.year === currentYear
@@ -200,24 +206,82 @@ function createDuesRow(member) {
 
 // 계좌 정보 렌더링
 function renderAccountInfo() {
-    if (!groupData || !groupData.groupInfo || !groupData.groupInfo.accountInfo) return;
-    
+    if (!groupData || !groupData.groupInfo || !groupData.groupInfo.accountInfo)
+        return;
+
     const accountBank = document.getElementById("account-bank");
     const accountNumber = document.getElementById("account-number");
-    
+
     if (accountBank) {
         accountBank.textContent = groupData.groupInfo.accountInfo.bank;
     }
-    
+
     if (accountNumber) {
-        accountNumber.textContent = groupData.groupInfo.accountInfo.accountNumber;
+        accountNumber.textContent =
+            groupData.groupInfo.accountInfo.accountNumber;
     }
 }
 
-// 모바일 스크롤 동작 설정 (제거됨 - 더 이상 필요 없음)
+// 스크롤 동작 설정 (모바일/데스크톱 공통)
 function setupMobileScrollBehavior() {
-    // 스크롤 가능한 콘텐츠 영역이 제거되어 더 이상 필요 없음
-    // 빈 함수로 유지하여 호출 오류 방지
+    setupScrollBehavior();
+}
+
+// 공통 스크롤 동작 설정 (모바일/데스크톱 공통)
+function setupScrollBehavior() {
+    const appContainer = document.querySelector(".app-container");
+    const mainCard = document.querySelector(".main-card");
+    const cardTitle = document.querySelector(".card-title");
+
+    if (!appContainer || !mainCard || !cardTitle) return;
+
+    let isScrolling = false;
+    let cardTitleSticky = false;
+
+    // 스크롤 이벤트 리스너
+    appContainer.addEventListener(
+        "scroll",
+        throttle(function () {
+            if (isScrolling) return;
+
+            const scrollTop = appContainer.scrollTop;
+            const heroSectionHeight =
+                document.querySelector(".hero-section").offsetHeight;
+
+            // main-card 스타일 변경 (기존 로직)
+            if (scrollTop > heroSectionHeight - 20) {
+                if (!mainCard.classList.contains("sticky")) {
+                    mainCard.classList.add("sticky");
+                    console.log("main-card sticky 추가됨");
+                }
+            } else {
+                if (mainCard.classList.contains("sticky")) {
+                    mainCard.classList.remove("sticky");
+                    console.log("main-card sticky 제거됨");
+                }
+            }
+
+            // card-title 고정 로직
+            const cardTitleRect = cardTitle.getBoundingClientRect();
+            const appContainerRect = appContainer.getBoundingClientRect();
+
+            // card-title이 상단에 닿았을 때 고정
+            if (cardTitleRect.top <= appContainerRect.top + 10) {
+                if (!cardTitleSticky) {
+                    cardTitleSticky = true;
+                    console.log("card-title sticky 상태:", cardTitleSticky);
+                }
+            } else {
+                if (cardTitleSticky) {
+                    cardTitleSticky = false;
+                    console.log("card-title sticky 해제됨");
+                }
+            }
+        }, 16)
+    ); // 60fps로 제한
+
+    // 부드러운 스크롤을 위한 CSS 스크롤 동작 설정
+    appContainer.style.scrollBehavior = "smooth";
 }
 
 // 이벤트 리스너 설정
@@ -241,7 +305,7 @@ function setupEventListeners() {
     }
 
     // 관리 버튼 (헤더 섹션에 있는 버튼)
-    const manageBtn = document.querySelector('.header-section button');
+    const manageBtn = document.querySelector(".header-section button");
     if (manageBtn) {
         manageBtn.addEventListener("click", function () {
             window.location.href = "admin.php";
@@ -433,17 +497,19 @@ document.addEventListener("keydown", function (e) {
 
 // 테마 초기화
 function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+    ).matches;
+
     if (savedTheme) {
         document.documentElement.className = savedTheme;
     } else if (prefersDark) {
-        document.documentElement.className = 'dark';
+        document.documentElement.className = "dark";
     } else {
-        document.documentElement.className = 'light';
+        document.documentElement.className = "light";
     }
-    
+
     updateThemeIcon();
     updateBackgroundImage(document.documentElement.className);
 }
@@ -451,66 +517,72 @@ function initializeTheme() {
 // 테마 토글
 function toggleTheme() {
     const currentTheme = document.documentElement.className;
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
     document.documentElement.className = newTheme;
-    localStorage.setItem('theme', newTheme);
+    localStorage.setItem("theme", newTheme);
     updateThemeIcon();
     updateBackgroundImage(newTheme);
-    
+
     // showToast(`${newTheme === 'dark' ? '다크' : '라이트'} 모드로 변경되었습니다.`, 'info');
 }
 
 // 배경 이미지 업데이트
 function updateBackgroundImage(theme) {
-    const heroLight = document.getElementById('hero-light');
-    const heroDark = document.getElementById('hero-dark');
-    
+    const heroLight = document.getElementById("hero-light");
+    const heroDark = document.getElementById("hero-dark");
+
     if (!heroLight || !heroDark) return;
-    
-    if (theme === 'dark') {
+
+    if (theme === "dark") {
         // 다크 모드: 다크 이미지를 보이게 함
-        heroLight.style.opacity = '0';
-        heroDark.style.opacity = '1';
-        heroLight.style.zIndex = '0';
-        heroDark.style.zIndex = '1';
+        heroLight.style.opacity = "0";
+        heroDark.style.opacity = "1";
+        heroLight.style.zIndex = "0";
+        heroDark.style.zIndex = "1";
     } else {
         // 라이트 모드: 라이트 이미지를 보이게 함
-        heroLight.style.opacity = '1';
-        heroDark.style.opacity = '0';
-        heroLight.style.zIndex = '1';
-        heroDark.style.zIndex = '0';
+        heroLight.style.opacity = "1";
+        heroDark.style.opacity = "0";
+        heroLight.style.zIndex = "1";
+        heroDark.style.zIndex = "0";
     }
 }
 
 // 초기 배경 이미지 설정
 function initializeBackgroundImage() {
-    const heroLight = document.getElementById('hero-light');
-    const heroDark = document.getElementById('hero-dark');
-    
+    const heroLight = document.getElementById("hero-light");
+    const heroDark = document.getElementById("hero-dark");
+
     if (!heroLight || !heroDark) return;
-    
+
     // 초기 상태: 라이트 이미지가 보이도록 설정
-    heroLight.style.opacity = '1';
-    heroDark.style.opacity = '0';
-    heroLight.style.zIndex = '1';
-    heroDark.style.zIndex = '0';
+    heroLight.style.opacity = "1";
+    heroDark.style.opacity = "0";
+    heroLight.style.zIndex = "1";
+    heroDark.style.zIndex = "0";
 }
 
 // 테마 아이콘 업데이트
 function updateThemeIcon() {
     const themeToggle = document.getElementById("theme-toggle");
     if (!themeToggle) return;
-    
-    const isDark = document.documentElement.className === 'dark';
-    const icon = themeToggle.querySelector('svg path');
-    
+
+    const isDark = document.documentElement.className === "dark";
+    const icon = themeToggle.querySelector("svg path");
+
     if (isDark) {
         // 해 아이콘 (다크모드일 때)
-        icon.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
+        icon.setAttribute(
+            "d",
+            "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+        );
     } else {
         // 달 아이콘 (라이트모드일 때)
-        icon.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
+        icon.setAttribute(
+            "d",
+            "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+        );
     }
 }
 
@@ -547,4 +619,3 @@ document.addEventListener("visibilitychange", function () {
             });
     }
 });
-
