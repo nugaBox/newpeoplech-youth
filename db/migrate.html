@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SQLite 마이그레이션</title>
+        <link rel="stylesheet" href="../css/tailwind.css" />
+        <link rel="stylesheet" href="../css/style.css" />
+    </head>
+    <body class="bg-gray-50">
+        <div class="container mx-auto p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8">
+                SQLite 마이그레이션
+            </h1>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    YAML → SQLite 마이그레이션
+                </h2>
+                <p class="text-gray-600 mb-4">
+                    기존 YAML 파일의 데이터를 SQLite 데이터베이스로
+                    마이그레이션합니다.
+                </p>
+                <button
+                    id="migrate-btn"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                    마이그레이션 실행
+                </button>
+            </div>
+
+            <div id="result" class="bg-white rounded-lg shadow-lg p-6 hidden">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                    마이그레이션 결과
+                </h3>
+                <div id="result-content"></div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    API 및 데이터베이스 테스트
+                </h2>
+                <button
+                    id="api-test-btn"
+                    class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-medium transition-colors mr-4"
+                >
+                    API 연결 테스트
+                </button>
+                <button
+                    id="test-btn"
+                    class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors mr-4"
+                >
+                    데이터 확인
+                </button>
+                <button
+                    id="clear-btn"
+                    class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                    데이터베이스 초기화
+                </button>
+            </div>
+
+            <div
+                id="test-result"
+                class="bg-white rounded-lg shadow-lg p-6 mt-6 hidden"
+            >
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                    테스트 결과
+                </h3>
+                <div id="test-content"></div>
+            </div>
+        </div>
+
+        <script>
+            document
+                .getElementById("migrate-btn")
+                .addEventListener("click", async function () {
+                    try {
+                        const response = await fetch(
+                            "migrate_api.php?path=migrate"
+                        );
+                        const result = await response.json();
+
+                        const resultDiv = document.getElementById("result");
+                        const contentDiv =
+                            document.getElementById("result-content");
+
+                        if (result.success) {
+                            contentDiv.innerHTML = `
+                        <div class="text-green-600 font-medium">✅ 마이그레이션이 성공적으로 완료되었습니다!</div>
+                        <div class="mt-2 text-gray-600">데이터베이스 파일: data.db</div>
+                    `;
+                        } else {
+                            contentDiv.innerHTML = `
+                        <div class="text-red-600 font-medium">❌ 마이그레이션 실패</div>
+                        <div class="mt-2 text-gray-600">${
+                            result.error || "알 수 없는 오류"
+                        }</div>
+                    `;
+                        }
+
+                        resultDiv.classList.remove("hidden");
+                    } catch (error) {
+                        console.error("마이그레이션 오류:", error);
+                        alert(
+                            "마이그레이션 중 오류가 발생했습니다: " +
+                                error.message
+                        );
+                    }
+                });
+
+            document
+                .getElementById("api-test-btn")
+                .addEventListener("click", async function () {
+                    try {
+                        const response = await fetch(
+                            "migrate_api.php?path=test"
+                        );
+                        const data = await response.json();
+
+                        const testDiv = document.getElementById("test-result");
+                        const contentDiv =
+                            document.getElementById("test-content");
+
+                        if (data.success) {
+                            const locationStatus = data.isInProjectRoot
+                                ? '<span class="text-green-600">✅ 프로젝트 루트</span>'
+                                : '<span class="text-orange-600">⚠️ 임시 디렉토리</span>';
+
+                            contentDiv.innerHTML = `
+                                 <div class="text-green-600 font-medium mb-4">✅ API 연결 성공!</div>
+                                 <div class="space-y-2">
+                                     <div><strong>메시지:</strong> ${
+                                         data.message
+                                     }</div>
+                                     <div><strong>시간:</strong> ${
+                                         data.timestamp
+                                     }</div>
+                                     <div><strong>데이터베이스 경로:</strong> ${
+                                         data.dbPath
+                                     }</div>
+                                     <div><strong>절대 경로:</strong> ${
+                                         data.absolutePath || "N/A"
+                                     }</div>
+                                     <div><strong>프로젝트 루트 경로:</strong> ${
+                                         data.projectRootDb || "N/A"
+                                     }</div>
+                                     <div><strong>실제 프로젝트 루트:</strong> ${
+                                         data.realProjectRootDb || "N/A"
+                                     }</div>
+                                     <div><strong>위치 상태:</strong> ${locationStatus}</div>
+                                     <div><strong>파일 존재:</strong> ${
+                                         data.fileExists ? "✅ 예" : "❌ 아니오"
+                                     }</div>
+                                     <div><strong>파일 크기:</strong> ${
+                                         data.fileSize
+                                     } bytes</div>
+                                 </div>
+                             `;
+                        } else {
+                            contentDiv.innerHTML = `
+                                 <div class="text-red-600 font-medium">❌ API 연결 실패</div>
+                                 <div class="mt-2 text-gray-600">${
+                                     data.error || "알 수 없는 오류"
+                                 }</div>
+                             `;
+                        }
+
+                        testDiv.classList.remove("hidden");
+                    } catch (error) {
+                        console.error("API 테스트 오류:", error);
+                        alert(
+                            "API 테스트 중 오류가 발생했습니다: " +
+                                error.message
+                        );
+                    }
+                });
+
+            document
+                .getElementById("test-btn")
+                .addEventListener("click", async function () {
+                    try {
+                        const response = await fetch(
+                            "migrate_api.php?path=all-data"
+                        );
+                        const data = await response.json();
+
+                        const testDiv = document.getElementById("test-result");
+                        const contentDiv =
+                            document.getElementById("test-content");
+
+                        if (data.groupInfo && data.years) {
+                            let html = `
+                        <div class="text-green-600 font-medium mb-4">✅ 데이터베이스 연결 성공!</div>
+                        <div class="space-y-2">
+                            <div><strong>그룹명:</strong> ${data.groupInfo.name}</div>
+                            <div><strong>계좌:</strong> ${data.groupInfo.accountInfo.bank} ${data.groupInfo.accountInfo.accountNumber}</div>
+                            <div><strong>연도 수:</strong> ${data.years.length}개</div>
+                            <div class="mt-4">
+                                <strong>연도별 회원 수:</strong>
+                                <ul class="ml-4 mt-2">
+                    `;
+
+                            data.years.forEach((year) => {
+                                html += `<li>${year.year}년: ${year.members.length}명</li>`;
+                            });
+
+                            html += `
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+
+                            contentDiv.innerHTML = html;
+                        } else {
+                            contentDiv.innerHTML = `
+                        <div class="text-red-600 font-medium">❌ 데이터베이스에 데이터가 없습니다</div>
+                        <div class="mt-2 text-gray-600">마이그레이션을 먼저 실행해주세요.</div>
+                    `;
+                        }
+
+                        testDiv.classList.remove("hidden");
+                    } catch (error) {
+                        console.error("테스트 오류:", error);
+                        alert(
+                            "데이터베이스 테스트 중 오류가 발생했습니다: " +
+                                error.message
+                        );
+                    }
+                });
+
+            document
+                .getElementById("clear-btn")
+                .addEventListener("click", function () {
+                    if (
+                        confirm(
+                            "데이터베이스를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+                        )
+                    ) {
+                        // 데이터베이스 파일 삭제 (실제로는 서버에서 처리해야 함)
+                        alert(
+                            "데이터베이스 초기화 기능은 서버에서 구현해야 합니다."
+                        );
+                    }
+                });
+        </script>
+    </body>
+</html>
