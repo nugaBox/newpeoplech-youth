@@ -1,0 +1,21 @@
+{
+    "name": "newpeoplech-youth",
+    "version": "1.0.0",
+    "description": "광주새백성교회 청장년회를 위한 모바일 우선 반응형 웹사이트입니다.",
+    "main": "index.js",
+    "scripts": {
+        "build-css": "tailwindcss -i ./src/input.css -o ./css/tailwind.css --watch",
+        "build-css-prod": "tailwindcss -i ./src/input.css -o ./css/tailwind.css --minify",
+        "build": "npm run build-css-prod",
+        "dev": "npm run build-css",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@tailwindcss/cli": "^4.1.14",
+        "autoprefixer": "^10.4.21",
+        "tailwindcss": "^4.1.14"
+    }
+}
