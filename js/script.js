@@ -754,7 +754,7 @@ function updateThemeIcon() {
 
     // 새로운 i 태그 생성
     const icon = document.createElement("i");
-    icon.className = "w-6 h-6";
+    icon.className = "w-5 h-5";
 
     if (isDark) {
         // 달 아이콘 (다크모드일 때)

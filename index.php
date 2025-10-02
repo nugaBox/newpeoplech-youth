@@ -57,7 +57,7 @@
                     </div>
                     <div class="flex-1">
                         <p class="text-gray-700 text-sm" id="next-event-date">예정된 행사</p>
-                        <p class="text-gray-700 font-semibold text-base" id="next-event-title">청장년회 월례회</p>
+                        <p class="text-gray-700 font-semibold text-base" id="next-event-title">​</p>
                     </div>
                 </div>
             </div>

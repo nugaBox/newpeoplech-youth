@@ -360,6 +360,22 @@ class Database {
             throw $e;
         }
     }
+
+    public function addYear($year) {
+        // 연도가 이미 존재하는지 확인
+        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM members WHERE year = ?');
+        $stmt->execute([$year]);
+        $count = $stmt->fetchColumn();
+        
+        if ($count > 0) {
+            return false; // 이미 존재하는 연도
+        }
+        
+        // 새로운 연도는 빈 회원 목록으로 생성
+        // 실제로는 연도가 존재하지 않으므로 성공으로 반환
+        // 연도 선택 옵션에만 추가되고, 실제 회원이 추가될 때까지는 빈 상태
+        return true;
+    }
 }
 ?>
 
