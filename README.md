@@ -1,156 +1,122 @@
 # 광주새백성교회 청장년회 홈페이지
 
-광주새백성교회 청장년회를 위한 모바일 우선 반응형 웹사이트입니다.
+광주새백성교회 청장년회 홈페이지 모바일 우선 반응형 웹사이트입니다.
 
-## 주요 기능
+> 사용자 URL : https://youth.newpeoplech.com
+>
+> 관리자 URL : https://youth.newpeoplech.com/admin.php
+>
+> Original URL : https://youth.nugabox.com (Proxy)
 
-### 사용자 페이지 (index.php)
-
--   **회원 현황**: 현재 연도 회원들의 사진, 이름, 직급 표시
--   **연도별 회원 명단**: 토글 방식으로 연도별 회원 목록 확인
--   **회비 현황**: 월별 회비 납부 상태를 시각적으로 표시 (✓/✗)
--   **모임통장 정보**: 계좌번호 복사 기능
--   **반응형 디자인**: 데스크탑, 태블릿, 모바일 모든 기기 지원
--   **터치 인터랙션**: 메인 카드 터치로 확장/축소 가능
-
-### 관리자 페이지 (admin.php)
-
--   **연도 관리**: 새 연도 추가, 기존 연도 수정/삭제
--   **회원 관리**: 회원 추가/수정/삭제, 사진 업로드, 직급 설정
--   **회비 관리**: 월별 회비 납부 상태 토글 관리
-
-## 기술 스택
-
--   **Frontend**: HTML5, CSS3, JavaScript (ES6+)
--   **CSS Framework**: Tailwind CSS (CDN)
--   **Font**: Noto Sans KR
--   **Data Storage**: JSON 파일 기반
--   **PHP**: 8.0+ (기본 구조만 사용)
-
-## 파일 구조
-
-```
-newpeoplech-youth/
-├── index.php              # 사용자 메인 페이지
-├── admin.php              # 관리자 페이지
-├── data.json              # 데이터 저장소
-├── README.md              # 프로젝트 설명서
-├── css/
-│   └── style.css          # 커스텀 스타일
-├── js/
-│   ├── script.js          # 사용자 페이지 JavaScript
-│   └── admin-script.js    # 관리자 페이지 JavaScript
-├── images/
-│   ├── default-avatar.svg # 기본 아바타 이미지
-│   ├── hero-bg.jpg        # 히어로 배경 이미지
-│   └── members/           # 회원 사진 폴더
-└── fonts/                 # 폰트 파일 폴더
-```
-
-## 설치 및 실행
-
-1. **웹 서버 설정**
-
-    ```bash
-    # PHP 내장 서버 사용 (개발용)
-    php -S localhost:8000
-
-    # 또는 Apache/Nginx 설정
-    ```
-
-2. **브라우저 접속**
-    - 사용자 페이지: `http://localhost:8000/index.php`
-    - 관리자 페이지: `http://localhost:8000/admin.php`
-
-## 사용법
+## Features
 
 ### 사용자 페이지
 
-1. 메인 카드를 터치하여 확장/축소
-2. 연도별 회원 명단 토글 클릭
-3. 모임통장 정보 버튼 클릭하여 계좌번호 복사
-4. 회비 현황에서 월별 납부 상태 확인
+#### 기본 기능
+
+-   **회원 현황**: 현재 연도 회원들의 사진, 이름, 직급 표시
+-   **연도별 회원 명단**: 토글 방식으로 연도별 회원 목록 확인 (모달 팝업)
+-   **회비 현황**: 월별 회비 납부 상태를 시각적으로 표시 (✓/✗), 연도별 조회 가능
+-   **모임통장 정보**: 계좌번호 복사 기능 (클립보드 API 지원)
+-   **다음 이벤트**: 예정된 행사 정보 표시 (제목, 날짜)
 
 ### 관리자 페이지
 
-1. **연도 관리 탭**
+1. **이벤트 관리**: 다음 이벤트 제목 및 날짜 설정
+2. **모임 정보**: 모임명 수정
+3. **성경 구절**: 성경 구절 텍스트 및 참조 설정
+4. **회원 관리**: 연도별 회원 추가/수정/삭제, 사진 업로드
+5. **회비 관리**: 월별 회비 납부 상태 토글 관리
+6. **모임통장**: 은행명 및 계좌번호 설정
 
-    - 새 연도 추가
-    - 기존 연도 수정/삭제
+## Stacks
 
-2. **회원 관리 탭**
+-   **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+-   **CSS Framework**: Tailwind CSS v4.1.14 (npm 설치)
+-   **Font**: Pretendard Variable
+-   **Data Storage**: SQLite 데이터베이스
+-   **PHP**: 8.0+ (기본 구조만 사용)
+-   **Build Tool**: npm scripts
 
-    - 연도 선택 후 회원 추가/수정/삭제
-    - 회원 사진 업로드
-    - 직급 설정
+## Manual
 
-3. **회비 관리 탭**
-    - 연도 선택 후 월별 회비 상태 토글
-    - ✓ (납부) / ✗ (미납) 상태 변경
+### 1. 프로젝트 클론 및 의존성 설치
 
-## 데이터 구조
+```bash
+# 프로젝트 클론
+git clone [repository-url]
+cd newpeoplech-youth
 
-### data.json 구조
-
-```json
-{
-    "groupInfo": {
-        "name": "광주새백성교회 청장년회",
-        "accountInfo": {
-            "bank": "토스뱅크",
-            "accountNumber": "111-11-1111"
-        }
-    },
-    "years": [
-        {
-            "year": 2024,
-            "members": [
-                {
-                    "id": 1,
-                    "name": "김철수",
-                    "position": "회장",
-                    "photo": "images/default-avatar.svg",
-                    "dues": {
-                        "1": true,
-                        "2": true
-                        // ... 12개월
-                    }
-                }
-            ]
-        }
-    ]
-}
+# 의존성 설치
+npm install
 ```
 
-## 커스터마이징
+### 2. Tailwind CSS 빌드
 
-### 스타일 수정
+```bash
+# 프로덕션 빌드 (압축된 CSS 생성)
+npm run build
 
--   `css/style.css` 파일에서 색상, 레이아웃 등 수정 가능
--   Tailwind CSS 클래스 활용
+# 개발용 빌드 (파일 변경 감지하여 자동 빌드)
+npm run dev
+```
 
-### 데이터 수정
+### 3. 웹 서버 실행
 
--   `data.json` 파일 직접 편집
--   관리자 페이지를 통한 웹 인터페이스 편집
+```bash
+# PHP 내장 서버 사용 (개발용)
+php -S localhost:8000
 
-### 이미지 추가
+# 또는 Apache/Nginx 설정
+```
 
--   `images/members/` 폴더에 회원 사진 추가
--   기본 아바타는 `images/default-avatar.svg` 수정
+### 4. 데이터베이스 마이그레이션
 
-## 브라우저 지원
+```bash
+# 웹 브라우저에서 마이그레이션 실행
+http://localhost:8000/include/migrate.html
+```
 
--   Chrome 60+
--   Firefox 55+
--   Safari 12+
--   Edge 79+
+### 5. 브라우저 접속
 
-## 라이선스
+-   **사용자 페이지**: `http://localhost:8000/index.php`
+-   **관리자 페이지**: `http://localhost:8000/admin.php`
+-   **마이그레이션**: `http://localhost:8000/include/migrate.html`
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
+## 개발 워크플로우
 
-## 문의
+### Tailwind CSS 커스터마이징
 
-프로젝트 관련 문의사항이 있으시면 개발자에게 연락해주세요.
+1. **설정 파일 수정**
 
+    ```bash
+    # tailwind.config.js에서 테마 커스터마이징
+    # src/input.css에서 추가 스타일 정의
+    ```
+
+2. **개발 모드 실행**
+
+    ```bash
+    npm run dev
+    # 파일 변경을 감지하여 자동으로 CSS 재빌드
+    ```
+
+3. **프로덕션 빌드**
+    ```bash
+    npm run build
+    # 압축된 CSS 파일 생성
+    ```
+
+### 빌드된 파일 위치
+
+-   **CSS**: `css/tailwind.css` (Tailwind CSS 유틸리티 클래스)
+-   **기존 CSS**: `css/style.css` (커스텀 스타일)
+-   **폰트**: `css/pretendardvariable.css` (Pretendard 폰트)
+
+### npm 스크립트
+
+```bash
+npm run build        # 프로덕션 빌드 (압축)
+npm run build-css    # 개발용 빌드 (감시 모드)
+npm run dev          # 개발용 빌드 (감시 모드)
+```
