@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>광주새백성교회 청장년회</title>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Noto Sans KR 폰트 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- 커스텀 CSS -->
+    <link rel="icon" type="image/png" href="/images/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/images/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/images/favicon/site.webmanifest" />
+    <link rel="stylesheet" href="css/tailwind.css">
+    <link rel="stylesheet" href="css/pretendardvariable.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="font-noto-sans bg-gray-50">
+<body class="bg-gray-50">
     <!-- 메인 컨테이너 -->
     <div class="app-container">
         <!-- 상단 배경 이미지 -->
@@ -24,7 +21,6 @@
             <img src="images/youth_light.jpg" class="hero-image hero-image-light" id="hero-light">
             <img src="images/youth_dark.jpg" class="hero-image hero-image-dark" id="hero-dark">
             <div class="hero-overlay"></div>
-            
             <!-- 테마 토글 버튼 -->
             <button id="theme-toggle" class="theme-toggle-btn">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,13 +28,10 @@
                 </svg>
             </button>
         </div>
-        
         <!-- 메인 콘텐츠 카드 -->
         <div class="main-card">
-                
                 <!-- 모임 정보 헤더 -->
-                <div class="p-6 pb-4">
-                    
+                <div class="card-title p-6 pb-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-1">
                             <img src="images/site-logo.png" alt="광주새백성교회 로고" class="site-logo">
@@ -53,39 +46,37 @@
                         </button>
                         */ ?>
                     </div>
-
-                        <!-- 연도별 회원 명단 버튼 -->
-                        <button id="yearly-members-btn" class="w-full mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between hover:bg-gray-100 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <circle cx="9" cy="7" r="4"/>
-                                    <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-                                    <circle cx="16" cy="7" r="4"/>
-                                    <path d="M13 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-                                </svg>
-                                <span class="text-sm text-gray-600">연도별 회원 명단</span>
-                            </div>
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
                 </div>
-
+                <div class="p-6 pt-0 pb-4">
+                    <!-- 연도별 회원 명단 버튼 -->
+                    <button id="yearly-members-btn" class="w-full mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            <span class="text-sm text-gray-600">연도별 회원 명단</span>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
                 <!-- 회원 현황 섹션 -->
                 <div class="px-6 pb-6">
+                    <h2 id="current-year" class="text-lg font-semibold text-gray-800 mb-4"></h2>
                     <div id="current-members" class="grid grid-cols-2 gap-3">
                         <!-- 회원 카드들이 여기에 동적으로 생성됩니다 -->
                     </div>
                 </div>
 
                 <!-- 회비 현황 섹션 -->
-                <div class="px-6 pb-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">회비 현황</h2>
+                <div class="px-6 pb-6 mt-4 mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2">회비 현황</h2>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="border-b">
-                                    <th class="text-left py-2 px-1">회원/월</th>
+                                    <th class="text-center py-2 px-1">회원/월</th>
                                     <th class="text-center py-2 px-1">1</th>
                                     <th class="text-center py-2 px-1">2</th>
                                     <th class="text-center py-2 px-1">3</th>
@@ -140,10 +131,6 @@
             </div>
         </div>
     </div>
-
-    <!-- YAML 파싱 라이브러리 -->
-    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-    
     <!-- JavaScript -->
     <script src="js/script.js"></script>
 </body>
